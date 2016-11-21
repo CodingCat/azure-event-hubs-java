@@ -200,3 +200,6 @@ Buildx86retail.dat
 
 # Typescript installed definition files for modules
 **/typings/
+
+.idea
+*.iml
