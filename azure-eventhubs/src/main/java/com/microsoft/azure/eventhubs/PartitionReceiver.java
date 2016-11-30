@@ -78,8 +78,7 @@ public final class PartitionReceiver extends ClientEntity implements IReceiverSe
                             final boolean offsetInclusive,
                             final Instant dateTime,
                             final Long epoch,
-                            final boolean isEpochReceiver)
-          throws ServiceBusException {
+                            final boolean isEpochReceiver) throws ServiceBusException {
     super(null, null);
 
     this.underlyingFactory = factory;
@@ -265,7 +264,8 @@ public final class PartitionReceiver extends ClientEntity implements IReceiverSe
    * @return A completableFuture that will yield a batch of {@link EventData}'s from the partition on which this receiver is created. Returns 'null' if no {@link EventData} is present.
    */
   public CompletableFuture<Iterable<EventData>> receive(final int maxEventCount) {
-    return this.internalReceiver.receive(maxEventCount).thenApply(new Function<Collection<Message>, Iterable<EventData>>() {
+    return this.internalReceiver.receive(maxEventCount).
+            thenApply(new Function<Collection<Message>, Iterable<EventData>>() {
       @Override
       public Iterable<EventData> apply(Collection<Message> amqpMessages) {
         return EventDataUtil.toEventDataCollection(amqpMessages);
@@ -361,25 +361,32 @@ public final class PartitionReceiver extends ClientEntity implements IReceiverSe
         totalMilliSeconds = Long.MAX_VALUE;
         if (TRACE_LOGGER.isLoggable(Level.WARNING)) {
           TRACE_LOGGER.log(Level.WARNING,
-                  String.format("receiverPath[%s], action[createReceiveLink], warning[starting receiver from epoch+Long.Max]", this.internalReceiver.getReceivePath()));
+                  String.format("receiverPath[%s], action[createReceiveLink], " +
+                          "warning[starting receiver from epoch+Long.Max]",
+                          this.internalReceiver.getReceivePath()));
         }
       }
 
       filter = new UnknownDescribedType(AmqpConstants.STRING_FILTER,
-              String.format(AmqpConstants.AMQP_ANNOTATION_FORMAT, AmqpConstants.ENQUEUED_TIME_UTC_ANNOTATION_NAME, StringUtil.EMPTY, totalMilliSeconds));
+              String.format(AmqpConstants.AMQP_ANNOTATION_FORMAT,
+                      AmqpConstants.ENQUEUED_TIME_UTC_ANNOTATION_NAME, StringUtil.EMPTY,
+                      totalMilliSeconds));
     } else {
       final String lastReceivedOffset;
       final boolean offsetInclusiveFlag;
       if (lastReceivedMessage != null) {
         offsetInclusiveFlag = false;
-        lastReceivedOffset = lastReceivedMessage.getMessageAnnotations().getValue().get(AmqpConstants.OFFSET).toString();
+        lastReceivedOffset = lastReceivedMessage.getMessageAnnotations().getValue().get(
+                AmqpConstants.OFFSET).toString();
       } else {
         offsetInclusiveFlag = this.offsetInclusive;
         lastReceivedOffset = this.startingOffset;
       }
 
       if (TRACE_LOGGER.isLoggable(Level.FINE)) {
-        TRACE_LOGGER.log(Level.FINE, String.format("receiverPath[%s], action[createReceiveLink], offset[%s], offsetInclusive[%s]", this.internalReceiver.getReceivePath(), lastReceivedOffset, offsetInclusiveFlag));
+        TRACE_LOGGER.log(Level.FINE, String.format("receiverPath[%s]," +
+                " action[createReceiveLink], offset[%s], offsetInclusive[%s]",
+                this.internalReceiver.getReceivePath(), lastReceivedOffset, offsetInclusiveFlag));
       }
 
       filter = new UnknownDescribedType(AmqpConstants.STRING_FILTER,

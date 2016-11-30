@@ -84,8 +84,10 @@ public final class ReceiveLinkHandler extends BaseLinkHandler {
 
     if (TRACE_LOGGER.isLoggable(Level.FINEST) && receiveLink != null) {
       TRACE_LOGGER.log(Level.FINEST,
-              String.format(Locale.US, "linkName[%s], updatedLinkCredit[%s], remoteCredit[%s], remoteCondition[%s], delivery.isPartial[%s]",
-                      receiveLink.getName(), receiveLink.getCredit(), receiveLink.getRemoteCredit(), receiveLink.getRemoteCondition(), delivery.isPartial()));
+              String.format(Locale.US, "linkName[%s], updatedLinkCredit[%s], remoteCredit[%s]," +
+                      " remoteCondition[%s], delivery.isPartial[%s]",
+                      receiveLink.getName(), receiveLink.getCredit(), receiveLink.getRemoteCredit(),
+                      receiveLink.getRemoteCondition(), delivery.isPartial()));
     }
   }
 }

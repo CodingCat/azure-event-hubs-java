@@ -415,8 +415,10 @@ public final class MessageReceiver extends ClientEntity implements IAmqpReceiver
 
 
         final String receiveLinkNamePrefix = StringUtil.getRandomString();
-        final String receiveLinkName = session.getConnection() != null && !StringUtil.isNullOrEmpty(session.getConnection().getRemoteContainer()) ?
-                receiveLinkNamePrefix.concat(TrackingUtil.TRACKING_ID_TOKEN_SEPARATOR).concat(session.getConnection().getRemoteContainer()) :
+        final String receiveLinkName = session.getConnection() != null &&
+                !StringUtil.isNullOrEmpty(session.getConnection().getRemoteContainer()) ?
+                receiveLinkNamePrefix.concat(TrackingUtil.TRACKING_ID_TOKEN_SEPARATOR).
+                        concat(session.getConnection().getRemoteContainer()) :
                 receiveLinkNamePrefix;
         final Receiver receiver = session.receiver(receiveLinkName);
         receiver.setSource(source);
@@ -565,7 +567,8 @@ public final class MessageReceiver extends ClientEntity implements IAmqpReceiver
   private static class ReceiveWorkItem extends WorkItem<Collection<Message>> {
     private final int maxMessageCount;
 
-    public ReceiveWorkItem(CompletableFuture<Collection<Message>> completableFuture, Duration timeout, final int maxMessageCount) {
+    public ReceiveWorkItem(CompletableFuture<Collection<Message>> completableFuture,
+                           Duration timeout, final int maxMessageCount) {
       super(completableFuture, timeout);
       this.maxMessageCount = maxMessageCount;
     }
